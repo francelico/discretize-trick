@@ -17,6 +17,30 @@ Requirements:
 - SDL2 for the default snapshot renderer
 - `uv`
 
+On Ubuntu, install SDL2 from the system package:
+
+```bash
+sudo apt update
+sudo apt install libsdl2-dev
+```
+
+If a suitable SDL2 package is unavailable, build the version used by PERSIST from source:
+
+```bash
+sudo apt install git g++ make cmake
+
+cd /tmp \
+  && git clone https://github.com/libsdl-org/SDL.git SDL2 \
+  && cd SDL2 \
+  && git checkout release-2.28.5 \
+  && mkdir -p build \
+  && cd build \
+  && cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local \
+  && make -j$(nproc) \
+  && sudo make install \
+  && sudo ldconfig
+```
+
 Install the environment:
 
 ```bash
@@ -32,6 +56,26 @@ uv run python train_scripts/train_diffuser_voxel.py --help
 ```
 
 ## Prebuilt dataset
+
+The complete `dynamic48_L8` sample dataset is hosted as a private Hugging Face dataset. Accounts
+with access can authenticate and download it directly into the expected local path:
+
+```bash
+uv run hf auth login
+uv run hf download francelico/dynamic48_L8 \
+  --repo-type dataset \
+  --local-dir datasets/dynamic48_L8
+```
+
+The download includes the raw episodes, voxel classes, voxel and pixel latents, metadata, latent
+statistics, and node-class registry. Use `--dataset-path datasets/dynamic48_L8` in the training and
+snapshot commands below.
+
+> [!IMPORTANT]
+> To test this codebase without retraining the full models, download the pretrained voxel VAE and
+> voxel DiT checkpoints released with [PERSIST](https://github.com/francelico/PERSIST) from the
+> [PERSIST-team Hugging Face organization](https://huggingface.co/PERSIST-team). Use checkpoints
+> from the same model variant and pass their local paths to the training or snapshot commands.
 
 Point `--dataset-path` at a directory with this layout:
 
@@ -138,6 +182,14 @@ WANDB_MODE=online uv run python train_scripts/<script>.py \
 Training metrics use `trainer/grad_step` as their W&B step. VAE snapshots upload reconstruction
 images, cross-entropy, and voxel accuracy. DiT snapshots upload rollout videos, latent MSE, voxel
 accuracy, and change agreement.
+
+## TODO
+
+- [ ] Generate a training dataset for small-scale experiments.
+- [ ] Retrain small voxel VAE/DiT models.
+- [ ] Experiment with argmax versus resampling in the voxel setup; consider top-k/top-p sampling.
+- [ ] Experiment with discretizing to whole pixel integer values in `[0, 255]` in the pixel model.
+- [ ] Implement a basic general-purpose discrete sampling layer.
 
 ## Repository layout
 
