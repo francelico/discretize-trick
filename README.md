@@ -90,6 +90,7 @@ dataset/
 ├── pixel_latents/<instance>.safetensors
 └── <raw episode path from metadata.csv>/data.npz
 ```
+more info at [PERSIST data.md](https://github.com/francelico/PERSIST/blob/main/dataset_toolkits/data.md)
 
 The VAE needs `metadata.csv`, `mt_voxel_classdict.json`, and `voxel_classes`. The DiT also needs
 the voxel and pixel latent folders, raw episode `data.npz` files for actions/cameras, and
