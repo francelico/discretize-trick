@@ -191,6 +191,7 @@ accuracy, and change agreement.
 - [ ] Experiment with argmax versus resampling in the voxel setup; consider top-k/top-p sampling.
 - [ ] Experiment with discretizing to whole pixel integer values in `[0, 255]` in the pixel model.
 - [ ] Implement a basic general-purpose discrete sampling layer.
+- [ ] How do we quantify performance? distance metric between categorical data, frequency aware distortion metric?
 
 ## Repository layout
 
